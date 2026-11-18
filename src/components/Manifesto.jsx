@@ -4,13 +4,25 @@ export default function Manifesto() {
   return (
     <section className="manifesto" aria-labelledby="manifesto-title">
       <picture className="manifesto__picture">
-        <source type="image/avif" srcSet={asset('assets/stills/meliquina-casa.avif')} />
-        <source type="image/webp" srcSet={asset('assets/stills/meliquina-casa.webp')} />
+        <source
+          type="image/avif"
+          srcSet={`${asset('assets/stills/desafio-960.avif')} 960w, ${asset(
+            'assets/stills/desafio-1800.avif',
+          )} 1800w`}
+          sizes="100vw"
+        />
+        <source
+          type="image/webp"
+          srcSet={`${asset('assets/stills/desafio-960.webp')} 960w, ${asset(
+            'assets/stills/desafio-1800.webp',
+          )} 1800w`}
+          sizes="100vw"
+        />
         <img
-          src={asset('assets/stills/meliquina-casa.jpg')}
+          src={asset('assets/stills/desafio-1800.jpg')}
           alt=""
-          width="960"
-          height="540"
+          width="1800"
+          height="2400"
           loading="lazy"
           decoding="async"
         />
