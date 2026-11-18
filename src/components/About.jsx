@@ -54,17 +54,23 @@ export default function About() {
               <picture>
                 <source
                   type="image/avif"
-                  srcSet={asset('assets/stills/meliquina-invierno.avif')}
+                  srcSet={`${asset('assets/stills/invierno-640.avif')} 640w, ${asset(
+                    'assets/stills/invierno-1200.avif',
+                  )} 1200w`}
+                  sizes="(max-width: 860px) 90vw, 520px"
                 />
                 <source
                   type="image/webp"
-                  srcSet={asset('assets/stills/meliquina-invierno.webp')}
+                  srcSet={`${asset('assets/stills/invierno-640.webp')} 640w, ${asset(
+                    'assets/stills/invierno-1200.webp',
+                  )} 1200w`}
+                  sizes="(max-width: 860px) 90vw, 520px"
                 />
                 <img
-                  src={asset('assets/stills/meliquina-invierno.jpg')}
-                  alt="Vista aérea del paisaje de Villa Lago Meliquina en invierno"
-                  width="960"
-                  height="540"
+                  src={asset('assets/stills/invierno-1200.jpg')}
+                  alt="Paisaje invernal en Villa Lago Meliquina"
+                  width="1200"
+                  height="1724"
                   loading="lazy"
                   decoding="async"
                 />
