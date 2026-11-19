@@ -8,16 +8,26 @@ import {
   WhatsAppIcon,
 } from './Icons'
 
-const CONTACT_EMAIL = 'contacto@rds.ar'
 const WHATSAPP_NUMBER = '5492972544498'
 const WHATSAPP_DISPLAY = '+54 9 2972 54-4498'
 const WHATSAPP_MESSAGE =
   'Hola RDS, quiero hacer una consulta sobre energía solar y automatización.'
-const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-  WHATSAPP_MESSAGE,
-)}`
-const FORM_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`
 const EMPTY_FORM = { name: '', email: '', message: '' }
+
+function buildWhatsAppUrl({ name, email, message } = {}) {
+  const lines = [WHATSAPP_MESSAGE]
+
+  if (name?.trim() || email?.trim() || message?.trim()) {
+    lines.push('')
+    if (name?.trim()) lines.push(`Nombre: ${name.trim()}`)
+    if (email?.trim()) lines.push(`Email: ${email.trim()}`)
+    if (message?.trim()) lines.push('', message.trim())
+  }
+
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(lines.join('\n'))}`
+}
+
+const WHATSAPP_URL = buildWhatsAppUrl()
 
 function validate(values) {
   const errors = {}
@@ -42,6 +52,7 @@ export default function Contact() {
   const [errors, setErrors] = useState({})
   const [status, setStatus] = useState('idle')
   const [sentName, setSentName] = useState('')
+  const [sentUrl, setSentUrl] = useState('')
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -50,8 +61,6 @@ export default function Contact() {
     if (errors[name]) {
       setErrors((current) => ({ ...current, [name]: undefined }))
     }
-
-    if (status === 'error') setStatus('idle')
   }
 
   const handleBlur = (event) => {
@@ -60,7 +69,7 @@ export default function Contact() {
     setErrors((current) => ({ ...current, [name]: fieldErrors[name] }))
   }
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
     const nextErrors = validate(form)
     setErrors(nextErrors)
@@ -71,38 +80,12 @@ export default function Contact() {
       return
     }
 
-    setStatus('sending')
-
-    try {
-      const response = await fetch(FORM_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          message: form.message.trim(),
-          _subject: 'Nueva consulta desde la web de RDS',
-          _template: 'table',
-          _captcha: 'false',
-          _honey: '',
-        }),
-      })
-
-      const data = await response.json().catch(() => null)
-
-      if (!response.ok || String(data?.success) === 'false') {
-        throw new Error('Error al enviar el formulario')
-      }
-
-      setSentName(form.name.trim().split(' ')[0])
-      setForm(EMPTY_FORM)
-      setStatus('success')
-    } catch (error) {
-      setStatus('error')
-    }
+    const url = buildWhatsAppUrl(form)
+    setSentName(form.name.trim().split(' ')[0])
+    setSentUrl(url)
+    setForm(EMPTY_FORM)
+    setStatus('success')
+    window.open(url, '_blank', 'noopener,noreferrer')
   }
 
   return (
@@ -130,8 +113,20 @@ export default function Contact() {
                 <span className="form-success__icon" aria-hidden="true">
                   <CheckIcon size={28} />
                 </span>
-                <h3>¡Gracias{sentName ? `, ${sentName}` : ''}! Recibimos tu consulta.</h3>
-                <p>Te vamos a responder a la brevedad a tu email.</p>
+                <h3>¡Gracias{sentName ? `, ${sentName}` : ''}! Tu consulta está lista.</h3>
+                <p>
+                  Abrimos WhatsApp con tu mensaje para que lo envíes. Si no se abrió,
+                  usá el botón de abajo.
+                </p>
+                <a
+                  className="btn btn--sun"
+                  href={sentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Abrir WhatsApp
+                  <ArrowUpRight />
+                </a>
                 <button
                   type="button"
                   className="btn btn--outline-light"
@@ -141,7 +136,7 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <form className="contact-form" onSubmit={handleSubmit} noValidate netlify>
+              <form className="contact-form" onSubmit={handleSubmit} noValidate>
                 <div className={`field ${errors.name ? 'is-invalid' : ''}`}>
                   <label htmlFor="field-name">
                     Nombre
@@ -221,28 +216,14 @@ export default function Contact() {
                 </div>
 
                 <div className="form-actions">
-                  <button
-                    className="btn btn--sun"
-                    type="submit"
-                    disabled={status === 'sending'}
-                  >
-                    {status === 'sending' ? 'Enviando…' : 'Enviar consulta'}
-                    {status !== 'sending' && <ArrowUpRight />}
+                  <button className="btn btn--sun" type="submit">
+                    Enviar consulta
+                    <ArrowUpRight />
                   </button>
                   <p className="form-note">
-                    Usamos tus datos solo para responder tu consulta.
+                    Se abrirá WhatsApp con tu consulta para que la envíes.
                   </p>
                 </div>
-
-                {status === 'error' && (
-                  <p className="form-error" role="alert">
-                    No pudimos enviar tu consulta. Probá de nuevo o escribinos por{' '}
-                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                      WhatsApp
-                    </a>
-                    .
-                  </p>
-                )}
               </form>
             )}
           </div>
