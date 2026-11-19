@@ -141,7 +141,7 @@ export default function Contact() {
                 </button>
               </div>
             ) : (
-              <form className="contact-form" onSubmit={handleSubmit} noValidate>
+              <form className="contact-form" onSubmit={handleSubmit} noValidate netlify>
                 <div className={`field ${errors.name ? 'is-invalid' : ''}`}>
                   <label htmlFor="field-name">
                     Nombre
