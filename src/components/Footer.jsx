@@ -55,10 +55,6 @@ export default function Footer() {
             <ArrowUp size={16} />
           </a>
         </div>
-
-        <p className="footer__wordmark" aria-hidden="true">
-          RDS
-        </p>
       </div>
     </footer>
   )

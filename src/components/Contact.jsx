@@ -1,8 +1,21 @@
 import { useState } from 'react'
 import SectionLabel from './SectionLabel'
-import { ArrowUpRight, CheckIcon, MailIcon, PinIcon, SunIcon } from './Icons'
+import {
+  ArrowUpRight,
+  CheckIcon,
+  PinIcon,
+  SunIcon,
+  WhatsAppIcon,
+} from './Icons'
 
 const CONTACT_EMAIL = 'contacto@rds.ar'
+const WHATSAPP_NUMBER = '5492972544498'
+const WHATSAPP_DISPLAY = '+54 9 2972 54-4498'
+const WHATSAPP_MESSAGE =
+  'Hola RDS, quiero hacer una consulta sobre energía solar y automatización.'
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  WHATSAPP_MESSAGE,
+)}`
 const FORM_ENDPOINT = `https://formsubmit.co/ajax/${CONTACT_EMAIL}`
 const EMPTY_FORM = { name: '', email: '', message: '' }
 
@@ -223,8 +236,11 @@ export default function Contact() {
 
                 {status === 'error' && (
                   <p className="form-error" role="alert">
-                    No pudimos enviar tu consulta. Probá de nuevo o escribinos directo a{' '}
-                    <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+                    No pudimos enviar tu consulta. Probá de nuevo o escribinos por{' '}
+                    <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+                      WhatsApp
+                    </a>
+                    .
                   </p>
                 )}
               </form>
@@ -233,10 +249,15 @@ export default function Contact() {
 
           <aside className="contact__aside" data-reveal style={{ '--delay': '0.1s' }}>
             <div className="contact__block">
-              <p className="contact__kicker">Email directo</p>
-              <a className="contact__email" href={`mailto:${CONTACT_EMAIL}`}>
-                <MailIcon size={22} />
-                {CONTACT_EMAIL}
+              <p className="contact__kicker">WhatsApp</p>
+              <a
+                className="contact__whatsapp"
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <WhatsAppIcon size={22} />
+                {WHATSAPP_DISPLAY}
                 <ArrowUpRight size={18} />
               </a>
             </div>
